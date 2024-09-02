@@ -9,7 +9,7 @@ paths:
     get:
       tags:
         - Get competition name
-      summary: getAllCompetitions
+      summary: get All Competitions
       operationId: findCompetitions
       parameters:
         - in: query
