@@ -1,0 +1,220 @@
+openapi: 3.0.3
+info:
+  title: STD23079 - TD5
+  version: "1.0.3"
+servers:
+  - url: https://localhost.STD23079.com
+paths:
+  /competition:
+    get:
+      tags:
+        - Get competition name
+      summary: getAllCompetitions
+      operationId: findCompetitions
+      parameters:
+        - in: query
+          name: competitionName
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: country
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: List of competitions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Competition"
+
+  /teams:
+    post:
+      tags:
+        - Teams
+      summary: Create a new team
+      operationId: createTeam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamInput"
+      responses:
+        201:
+          description: Team created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Team"
+                
+    get:
+      tags:
+        - Teams
+      summary: Get all teams
+      operationId: getTeams
+      parameters:
+        - in: query
+          name: teamName
+          schema:
+            type: string
+          description: Filter teams
+      responses:
+        200:
+          description: List of teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Team"
+                  
+  /teams/{teamId}/competitions:
+    post:
+      tags:
+        - Teams
+      summary: Associate competitions
+      operationId: associateCompetitions
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/CompetitionId"
+      responses:
+        200:
+          description: Competitions associated successfully
+
+  /teams/{teamId}/players:
+    post:
+      tags:
+        - Teams
+      summary: Associate players
+      operationId: associatePlayers
+      parameters:
+        - name: teamId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/PlayerId"
+      responses:
+        200:
+          description: Players associated successfully
+  /players:
+    post:
+      tags:
+        - Players
+      summary: Create a new player
+      operationId: createPlayer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InputPlayer"
+      responses:
+        201:
+          description: Player created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Player"
+
+components:
+  schemas:
+    TeamInput:
+      type: object
+      properties:
+        name:
+          type: string
+        slogan:
+          type: string
+      required:
+        - name
+        - slogan
+
+    Team:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        slogan:
+          type: string
+        competitions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Competition"
+        players:
+          type: array
+          items:
+            $ref: "#/components/schemas/Player"
+    
+    Competition:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        country:
+          type: string
+
+    CompetitionId:
+      type: string
+
+    Player:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        position:
+          type: string
+        strongFoot:
+          type: string
+          enum:
+            - Left
+            - Right
+
+    PlayerId:
+      type: string
+    
+    InputPlayer:
+      type: object
+      properties:
+        name:
+          type: string
+        number:
+          type: integer
+        strongFoot:
+          type: string
+          enum:
+            - Left
+            - Right
+      required:
+        - name
+        - number
+        - strongFoot
