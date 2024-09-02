@@ -22,6 +22,16 @@ paths:
           schema:
             type: string
           required: true
+        - in: query
+          name: page
+          schema: 
+            type: integer
+          required : true
+        - in: query
+          name: pageSize
+          schema: 
+            type: integer
+          required : true
       responses:
         200:
           description: List of competitions
